@@ -1476,6 +1476,25 @@ static void osdElementWarnings(osdElementParms_t *element)
     }
 }
 
+
+static void osdElementGAME(osdElementParms_t *element)
+{
+    // Draw AH sides
+    const int8_t hudwidth = AH_SIDEBAR_WIDTH_POS;
+    const int8_t hudheight = AH_SIDEBAR_HEIGHT_POS;
+    for (int y = -hudheight; y <= hudheight; y++) {
+        osdDisplayWriteChar(element, element->elemPosX - hudwidth, element->elemPosY + y, DISPLAYPORT_ATTR_NONE, SYM_AH_DECORATION);
+        osdDisplayWriteChar(element, element->elemPosX + hudwidth, element->elemPosY + y, DISPLAYPORT_ATTR_NONE, SYM_AH_DECORATION);
+    }
+
+    // AH level indicators
+    osdDisplayWriteChar(element, element->elemPosX - hudwidth + 1, element->elemPosY, DISPLAYPORT_ATTR_NONE, SYM_AH_LEFT);
+    osdDisplayWriteChar(element, element->elemPosX + hudwidth - 1, element->elemPosY, DISPLAYPORT_ATTR_NONE, SYM_AH_RIGHT);
+
+    element->drawElement = false;  // element already drawn
+}
+
+
 // Define the order in which the elements are drawn.
 // Elements positioned later in the list will overlay the earlier
 // ones if their character positions overlap
@@ -1675,6 +1694,7 @@ const osdElementDrawFn osdElementDrawFunction[OSD_ITEM_COUNT] = {
 #ifdef USE_PERSISTENT_STATS
     [OSD_TOTAL_FLIGHTS]           = osdElementTotalFlights,
 #endif
+    [OSD_GAME]              = osdElementGAME,  // only has background, but needs to be over other elements (like artificial horizon)
 };
 
 // Define the mapping between the OSD element id and the function to draw its background (static part)
@@ -1704,6 +1724,8 @@ static void osdAddActiveElement(osd_items_e element)
 void osdAddActiveElements(void)
 {
     activeOsdElementCount = 0;
+
+    osdAddActiveElement(OSD_GAME);
 
 #ifdef USE_ACC
     if (sensors(SENSOR_ACC)) {
