@@ -419,6 +419,7 @@ static void osdDrawLogo(int x, int y)
         for (int column = 0; column < 24; column++) {
             if (fontOffset <= SYM_END_OF_FONT)
                 displayWriteChar(osdDisplayPort, x + column, y + row, DISPLAYPORT_ATTR_NONE, fontOffset++);
+                displayWriteChar(osdDisplayPort, 0, 0, DISPLAYPORT_ATTR_NONE, 35);
         }
     }
 }
