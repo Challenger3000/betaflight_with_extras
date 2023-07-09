@@ -1479,17 +1479,19 @@ static void osdElementWarnings(osdElementParms_t *element)
 
 static void osdElementGAME(osdElementParms_t *element)
 {
-    // Draw AH sides
-    const int8_t hudwidth = AH_SIDEBAR_WIDTH_POS;
-    const int8_t hudheight = AH_SIDEBAR_HEIGHT_POS;
-    for (int y = -hudheight; y <= hudheight; y++) {
-        osdDisplayWriteChar(element, element->elemPosX - hudwidth, element->elemPosY + y, DISPLAYPORT_ATTR_NONE, SYM_AH_DECORATION);
-        osdDisplayWriteChar(element, element->elemPosX + hudwidth, element->elemPosY + y, DISPLAYPORT_ATTR_NONE, SYM_AH_DECORATION);
-    }
+    
+    osdDisplayWriteChar(element, 1, 1, DISPLAYPORT_ATTR_NONE, 35);
+    // // Draw AH sides
+    // const int8_t hudwidth = AH_SIDEBAR_WIDTH_POS;
+    // const int8_t hudheight = AH_SIDEBAR_HEIGHT_POS;
+    // for (int y = -hudheight; y <= hudheight; y++) {
+    //     osdDisplayWriteChar(element, element->elemPosX - hudwidth, element->elemPosY + y, DISPLAYPORT_ATTR_NONE, SYM_AH_DECORATION);
+    //     osdDisplayWriteChar(element, element->elemPosX + hudwidth, element->elemPosY + y, DISPLAYPORT_ATTR_NONE, SYM_AH_DECORATION);
+    // }
 
-    // AH level indicators
-    osdDisplayWriteChar(element, element->elemPosX - hudwidth + 1, element->elemPosY, DISPLAYPORT_ATTR_NONE, SYM_AH_LEFT);
-    osdDisplayWriteChar(element, element->elemPosX + hudwidth - 1, element->elemPosY, DISPLAYPORT_ATTR_NONE, SYM_AH_RIGHT);
+    // // AH level indicators
+    // osdDisplayWriteChar(element, element->elemPosX - hudwidth + 1, element->elemPosY, DISPLAYPORT_ATTR_NONE, SYM_AH_LEFT);
+    // osdDisplayWriteChar(element, element->elemPosX + hudwidth - 1, element->elemPosY, DISPLAYPORT_ATTR_NONE, SYM_AH_RIGHT);
 
     element->drawElement = false;  // element already drawn
 }
