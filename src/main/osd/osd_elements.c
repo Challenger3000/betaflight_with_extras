@@ -1480,7 +1480,7 @@ static void osdElementWarnings(osdElementParms_t *element)
 static void osdElementGAME(osdElementParms_t *element)
 {
     for(int game_x = 0;game_x<=29;game_x++){
-        for(int game_y = 0;game_y<=12;game_x++){
+        for(int game_y = 0;game_y<=12;game_y++){
             osdDisplayWriteChar(element, game_x, game_y, DISPLAYPORT_ATTR_NONE, 35);
         }
     }
