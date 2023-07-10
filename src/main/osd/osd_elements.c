@@ -1491,11 +1491,11 @@ static void osdElementGAME(osdElementParms_t *element)
 
     int pitch_int = ((rcData[PITCH] - 1000) * 12) / 1000;
     int roll_int = ((rcData[ROLL] - 1000) * 29) / 1000;
-    char buffer[32];
     
     osdDisplayWriteChar(element, roll_int, 12-pitch_int, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
 
     // uncomenting to see the actual performance
+    // char buffer[32];
     // tfp_sprintf(buffer, "Pitch: %d, Roll: %d", pitch_int, roll_int);
     // cliPrintLine(buffer);
 
