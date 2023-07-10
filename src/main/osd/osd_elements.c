@@ -1486,7 +1486,7 @@ static void osdElementGAME(osdElementParms_t *element)
             tfp_sprintf(fmtbuf, "%d", rcData[THROTTLE]);
 
             char buffer[32];
-            sprintf(buffer, "The number is: %d", rcData[THROTTLE]);
+            printf(buffer, "The number is: %d", rcData[THROTTLE]);
             cliPrintLine(buffer);
 
             //debug[0] = rcData[THROTTLE];//lags out
