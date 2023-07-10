@@ -1479,8 +1479,11 @@ static void osdElementWarnings(osdElementParms_t *element)
 
 static void osdElementGAME(osdElementParms_t *element)
 {
-    
-    osdDisplayWriteChar(element, 1, 1, DISPLAYPORT_ATTR_NONE, 35);
+    for(int game_x = 0;game_x<=30;game_x++){
+        for(int game_y = 0;game_y<=16;game_x++){
+            osdDisplayWriteChar(element, game_x, game_y, DISPLAYPORT_ATTR_NONE, 35);
+        }
+    }
     // // Draw AH sides
     // const int8_t hudwidth = AH_SIDEBAR_WIDTH_POS;
     // const int8_t hudheight = AH_SIDEBAR_HEIGHT_POS;
