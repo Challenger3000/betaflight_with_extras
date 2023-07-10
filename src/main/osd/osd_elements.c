@@ -1488,8 +1488,11 @@ static void osdElementGAME(osdElementParms_t *element)
     // tfp_sprintf(buffer, "The number is: %d.%03d", beforeDecimal, afterDecimal);
     // cliPrintLine(buffer);
 
-    int throttlePercentage = (rcData[THROTTLE] - 1000) / 10; // Maps 1000-2000 range to 0-100
+    int throttlePercentage = (rcData[THROTTLE] - 1000) / 100;
     char buffer[32];
+    
+    osdDisplayWriteChar(element, 1, throttlePercentage, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
+
     tfp_sprintf(buffer, "The throttle is: %d%%", throttlePercentage);
     cliPrintLine(buffer);
 
