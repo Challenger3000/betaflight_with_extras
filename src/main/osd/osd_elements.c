@@ -1481,12 +1481,19 @@ static void osdElementWarnings(osdElementParms_t *element)
 
 static void osdElementGAME(osdElementParms_t *element)
 {
-    int beforeDecimal = (int)rcData[THROTTLE];
-    int afterDecimal = ABS((int)((rcData[THROTTLE] - beforeDecimal) * 1000)); // 3 decimal places
+    // THIS WORKS!!! DONT TOUCH
+    // int beforeDecimal = (int)rcData[THROTTLE];
+    // int afterDecimal = ABS((int)((rcData[THROTTLE] - beforeDecimal) * 1000)); // 3 decimal places
+    // char buffer[32];
+    // tfp_sprintf(buffer, "The number is: %d.%03d", beforeDecimal, afterDecimal);
+    // cliPrintLine(buffer);
+
+    int throttlePercentage = (rcData[THROTTLE] - 1000) / 10; // Maps 1000-2000 range to 0-100
     char buffer[32];
-    tfp_sprintf(buffer, "The number is: %d.%03d", beforeDecimal, afterDecimal);
+    tfp_sprintf(buffer, "The throttle is: %d%%", throttlePercentage);
     cliPrintLine(buffer);
-    //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
+
+    // //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
     // char fmtbuf[6];
     // tfp_sprintf(fmtbuf, "%d", rcData[THROTTLE]);
     // cliPrintLine();
