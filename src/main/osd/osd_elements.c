@@ -1481,28 +1481,23 @@ static void osdElementWarnings(osdElementParms_t *element)
 
 static void osdElementGAME(osdElementParms_t *element)
 {
-            //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
-            char fmtbuf[6];
-            tfp_sprintf(fmtbuf, "%d", rcData[THROTTLE]);
+    int beforeDecimal = (int)rcData[THROTTLE];
+    int afterDecimal = ABS((int)((rcData[THROTTLE] - beforeDecimal) * 1000)); // 3 decimal places
+    char buffer[32];
+    tfp_sprintf(buffer, "The number is: %d.%03d", beforeDecimal, afterDecimal);
+    cliPrintLine(buffer);
+    //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
+    // char fmtbuf[6];
+    // tfp_sprintf(fmtbuf, "%d", rcData[THROTTLE]);
+    // cliPrintLine();
+    // osdDisplayWrite(element, 5, 5 , DISPLAYPORT_ATTR_NONE, fmtbuf);
+    //debug[0] = rcData[THROTTLE];//lags out
 
-            char buffer[32];
-            printf(buffer, "The number is: %d", rcData[THROTTLE]);
-            cliPrintLine(buffer);
-
-            //debug[0] = rcData[THROTTLE];//lags out
-            cliPrintLine();
-            osdDisplayWrite(element, 5, 5 , DISPLAYPORT_ATTR_NONE, fmtbuf);
-// for(int game_x = 0;game_x<=29;game_x++){
-//     for(int game_y = 0;game_y<=12;game_y++){
-//         //osdDisplayWriteChar(element, game_x, game_y, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
-//     }
-//     }
-
-
-
-
-
-
+    // for(int game_x = 0;game_x<=29;game_x++){
+    //     for(int game_y = 0;game_y<=12;game_y++){
+    //         //osdDisplayWriteChar(element, game_x, game_y, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
+    //     }
+    //     }
     element->drawElement = false;  // element already drawn
 }
 
