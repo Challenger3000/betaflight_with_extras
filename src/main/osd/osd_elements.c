@@ -1493,10 +1493,11 @@ static void osdElementGAME(osdElementParms_t *element)
     int roll_int = ((rcData[ROLL] - 1000) * 29) / 1000;
     char buffer[32];
     
-    osdDisplayWriteChar(element, roll_int, pitch_int, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
+    osdDisplayWriteChar(element, roll_int, 12-pitch_int, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
 
-    tfp_sprintf(buffer, "Pitch: %d, Roll: %d", pitch_int, roll_int);
-    cliPrintLine(buffer);
+    // uncomenting to see the actual performance
+    // tfp_sprintf(buffer, "Pitch: %d, Roll: %d", pitch_int, roll_int);
+    // cliPrintLine(buffer);
 
     // //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
     // char fmtbuf[6];
