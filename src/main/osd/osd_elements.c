@@ -98,6 +98,8 @@
         type 4: Numeric % or used battery
 */
 
+#include <cli_debug_print.h>
+
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -1481,8 +1483,14 @@ static void osdElementGAME(osdElementParms_t *element)
 {
             //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
             char fmtbuf[6];
-            tfp_sprintf(fmtbuf, "%u", rcData[THROTTLE]);
-            debug[0] = rcData[THROTTLE];
+            tfp_sprintf(fmtbuf, "%d", rcData[THROTTLE]);
+
+            char buffer[32];
+            sprintf(buffer, "The number is: %d", rcData[THROTTLE]);
+            cliPrintLine(buffer);
+
+            //debug[0] = rcData[THROTTLE];//lags out
+            cliPrintLine();
             osdDisplayWrite(element, 5, 5 , DISPLAYPORT_ATTR_NONE, fmtbuf);
 // for(int game_x = 0;game_x<=29;game_x++){
 //     for(int game_y = 0;game_y<=12;game_y++){
