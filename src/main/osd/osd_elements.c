@@ -1488,7 +1488,6 @@ static void osdElementGAME(osdElementParms_t *element)
 //         //osdDisplayWriteChar(element, game_x, game_y, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
 //     }
 //     }
-    }
 
 
 
