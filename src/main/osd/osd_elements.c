@@ -98,7 +98,7 @@
         type 4: Numeric % or used battery
 */
 
-#include <cli_debug_print.h>
+#include <cli\cli_debug_print.h>
 
 #include <stdbool.h>
 #include <stdint.h>

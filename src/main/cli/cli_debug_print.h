@@ -31,6 +31,9 @@
 //           Be sure to reverse the Usage steps above to remove the debugging
 //           elements before submitting final code.
 
+#define USE_CLI_DEBUG_PRINT
+
+
 #include "platform.h"
 
 #ifdef USE_CLI_DEBUG_PRINT
