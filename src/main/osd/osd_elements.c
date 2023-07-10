@@ -1479,18 +1479,10 @@ static void osdElementWarnings(osdElementParms_t *element)
 
 static void osdElementGAME(osdElementParms_t *element)
 {
-    const uint8_t xpos = element->elemPosX;
-    const uint8_t ypos = element->elemPosY;
-    for (int i = 0; i < OSD_RCCHANNELS_COUNT; i++) {
-        if (osdConfig()->rcChannels[i] >= 0) {
-            // Translate (1000, 2000) to (-1000, 1000)
-            int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
-            // Opt for the simplest formatting for now.
-            // Decimal notation can be added when tfp_sprintf supports float among fancy options.
+            //int data = scaleRange(rcData[osdConfig()->rcChannels[i]], PWM_RANGE_MIN, PWM_RANGE_MAX, -1000, 1000);
             char fmtbuf[6];
-            tfp_sprintf(fmtbuf, "%5d", data);
-            osdDisplayWrite(element, 5, 5 + i, DISPLAYPORT_ATTR_NONE, fmtbuf);
-        }
+            tfp_sprintf(fmtbuf, "%5d", rcData[1]);
+            osdDisplayWrite(element, 5, 5 , DISPLAYPORT_ATTR_NONE, fmtbuf);
 // for(int game_x = 0;game_x<=29;game_x++){
 //     for(int game_y = 0;game_y<=12;game_y++){
 //         //osdDisplayWriteChar(element, game_x, game_y, DISPLAYPORT_ATTR_NONE, 35); // draws white canvas
