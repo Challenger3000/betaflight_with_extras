@@ -233,6 +233,8 @@ CFLAGS     += $(ARCH_FLAGS) \
               -Wall -Wextra -Werror -Wpedantic -Wunsafe-loop-optimizations -Wdouble-promotion \
               $(EXTRA_WARNING_FLAGS) \
               -Wno-unused-parameter \
+              -Wno-unused-function \
+              -Wno-unused-const-variable \
               -ffunction-sections \
               -fdata-sections \
               -fno-common \
