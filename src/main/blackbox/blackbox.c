@@ -1746,10 +1746,8 @@ STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
 void blackboxUpdate(timeUs_t currentTimeUs)
 {
 
-    blackboxWriteString("GAY ");
-    return;
-    static BlackboxState cacheFlushNextState;
-
+    static BlackboxState cacheFlushNextState = BLACKBOX_STATE_RUNNING;
+    
     switch (blackboxState) {
     case BLACKBOX_STATE_STOPPED:
         if (ARMING_FLAG(ARMED)) {
@@ -1769,6 +1767,9 @@ void blackboxUpdate(timeUs_t currentTimeUs)
         break;
     case BLACKBOX_STATE_SEND_HEADER:
         blackboxReplenishHeaderBudget();
+        
+        blackboxSetState(BLACKBOX_STATE_SEND_MAIN_FIELD_HEADER);
+        return;
         //On entry of this state, xmitState.headerIndex is 0 and startTime is intialised
 
         /*
