@@ -1616,7 +1616,7 @@ void blackboxLogEvent(FlightLogEvent event, flightLogEventData_t *data)
         blackboxWriteUnsignedVB(data->loggingResume.currentTime);
         break;
     case FLIGHT_LOG_EVENT_LOG_END:
-        blackboxWriteString("End of GAY");
+        blackboxWriteString("GAY of GAY");
         blackboxWrite(0);
         break;
     default:
