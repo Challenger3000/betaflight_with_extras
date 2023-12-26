@@ -1587,41 +1587,42 @@ void blackboxLogEvent(FlightLogEvent event, flightLogEventData_t *data)
     }
 
     //Shared header for event frames
-    blackboxWrite('E');
-    blackboxWrite(event);
+    blackboxWrite('GAY ');
+
+    // blackboxWrite(event);
 
     //Now serialize the data for this specific frame type
-    switch (event) {
-    case FLIGHT_LOG_EVENT_SYNC_BEEP:
-        blackboxWriteUnsignedVB(data->syncBeep.time);
-        break;
-    case FLIGHT_LOG_EVENT_FLIGHTMODE: // New flightmode flags write
-        blackboxWriteUnsignedVB(data->flightMode.flags);
-        blackboxWriteUnsignedVB(data->flightMode.lastFlags);
-        break;
-    case FLIGHT_LOG_EVENT_DISARM:
-        blackboxWriteUnsignedVB(data->disarm.reason);
-        break;
-    case FLIGHT_LOG_EVENT_INFLIGHT_ADJUSTMENT:
-        if (data->inflightAdjustment.floatFlag) {
-            blackboxWrite(data->inflightAdjustment.adjustmentFunction + FLIGHT_LOG_EVENT_INFLIGHT_ADJUSTMENT_FUNCTION_FLOAT_VALUE_FLAG);
-            blackboxWriteFloat(data->inflightAdjustment.newFloatValue);
-        } else {
-            blackboxWrite(data->inflightAdjustment.adjustmentFunction);
-            blackboxWriteSignedVB(data->inflightAdjustment.newValue);
-        }
-        break;
-    case FLIGHT_LOG_EVENT_LOGGING_RESUME:
-        blackboxWriteUnsignedVB(data->loggingResume.logIteration);
-        blackboxWriteUnsignedVB(data->loggingResume.currentTime);
-        break;
-    case FLIGHT_LOG_EVENT_LOG_END:
-        blackboxWriteString("GAY of GAY");
-        blackboxWrite(0);
-        break;
-    default:
-        break;
-    }
+    // switch (event) {
+    // case FLIGHT_LOG_EVENT_SYNC_BEEP:
+    //     blackboxWriteUnsignedVB(data->syncBeep.time);
+    //     break;
+    // case FLIGHT_LOG_EVENT_FLIGHTMODE: // New flightmode flags write
+    //     blackboxWriteUnsignedVB(data->flightMode.flags);
+    //     blackboxWriteUnsignedVB(data->flightMode.lastFlags);
+    //     break;
+    // case FLIGHT_LOG_EVENT_DISARM:
+    //     blackboxWriteUnsignedVB(data->disarm.reason);
+    //     break;
+    // case FLIGHT_LOG_EVENT_INFLIGHT_ADJUSTMENT:
+    //     if (data->inflightAdjustment.floatFlag) {
+    //         blackboxWrite(data->inflightAdjustment.adjustmentFunction + FLIGHT_LOG_EVENT_INFLIGHT_ADJUSTMENT_FUNCTION_FLOAT_VALUE_FLAG);
+    //         blackboxWriteFloat(data->inflightAdjustment.newFloatValue);
+    //     } else {
+    //         blackboxWrite(data->inflightAdjustment.adjustmentFunction);
+    //         blackboxWriteSignedVB(data->inflightAdjustment.newValue);
+    //     }
+    //     break;
+    // case FLIGHT_LOG_EVENT_LOGGING_RESUME:
+    //     blackboxWriteUnsignedVB(data->loggingResume.logIteration);
+    //     blackboxWriteUnsignedVB(data->loggingResume.currentTime);
+    //     break;
+    // case FLIGHT_LOG_EVENT_LOG_END:
+    //     blackboxWriteString("GAY of GAY");
+    //     blackboxWrite(0);
+    //     break;
+    // default:
+    //     break;
+    // }
 }
 
 /* If an arming beep has played since it was last logged, write the time of the arming beep to the log as a synchronization point */
