@@ -232,6 +232,7 @@ CFLAGS     += $(ARCH_FLAGS) \
               -std=gnu17 \
               -Wall -Wextra -Werror -Wpedantic -Wunsafe-loop-optimizations -Wdouble-promotion \
               $(EXTRA_WARNING_FLAGS) \
+              -Wno-unused-parameter \
               -ffunction-sections \
               -fdata-sections \
               -fno-common \
