@@ -1586,9 +1586,10 @@ void blackboxLogEvent(FlightLogEvent event, flightLogEventData_t *data)
         return;
     }
 
-    //Shared header for event frames
-    blackboxWrite('GAY ');
-
+    
+    blackboxWriteString("Kinda GAY ngl");
+    // blackboxWrite('E');
+    
     // blackboxWrite(event);
 
     //Now serialize the data for this specific frame type
