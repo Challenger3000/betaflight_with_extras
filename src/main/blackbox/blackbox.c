@@ -1750,7 +1750,7 @@ STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
 void blackboxUpdate(timeUs_t currentTimeUs)
 {
 
-    static BlackboxState cacheFlushNextState = BLACKBOX_STATE_RUNNING;
+    // static BlackboxState cacheFlushNextState = BLACKBOX_STATE_RUNNING;
     
     switch (blackboxState) {
     case BLACKBOX_STATE_STOPPED:
