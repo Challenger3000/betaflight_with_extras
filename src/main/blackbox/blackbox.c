@@ -1695,48 +1695,52 @@ STATIC_UNIT_TESTED void blackboxAdvanceIterationTimers(void)
 // Called once every FC loop in order to log the current state
 STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
 {
-    // Write a keyframe every blackboxIInterval frames so we can resynchronise upon missing frames
-    if (blackboxShouldLogIFrame()) {
-        /*
-         * Don't log a slow frame if the slow data didn't change ("I" frames are already large enough without adding
-         * an additional item to write at the same time). Unless we're *only* logging "I" frames, then we have no choice.
-         */
-        if (blackboxIsOnlyLoggingIntraframes()) {
-            writeSlowFrameIfNeeded();
-        }
+    blackboxWrite('G');
+    blackboxWrite('A');
+    blackboxWrite('Y');
+    blackboxWrite(' ');
+//     // Write a keyframe every blackboxIInterval frames so we can resynchronise upon missing frames
+//     if (blackboxShouldLogIFrame()) {
+//         /*
+//          * Don't log a slow frame if the slow data didn't change ("I" frames are already large enough without adding
+//          * an additional item to write at the same time). Unless we're *only* logging "I" frames, then we have no choice.
+//          */
+//         if (blackboxIsOnlyLoggingIntraframes()) {
+//             writeSlowFrameIfNeeded();
+//         }
 
-        loadMainState(currentTimeUs);
-        writeIntraframe();
-    } else {
-        blackboxCheckAndLogArmingBeep();
-        blackboxCheckAndLogFlightMode(); // Check for FlightMode status change event
+//         loadMainState(currentTimeUs);
+//         writeIntraframe();
+//     } else {
+//         blackboxCheckAndLogArmingBeep();
+//         blackboxCheckAndLogFlightMode(); // Check for FlightMode status change event
 
-        if (blackboxShouldLogPFrame()) {
-            /*
-             * We assume that slow frames are only interesting in that they aid the interpretation of the main data stream.
-             * So only log slow frames during loop iterations where we log a main frame.
-             */
-            writeSlowFrameIfNeeded();
+//         if (blackboxShouldLogPFrame()) {
+//             /*
+//              * We assume that slow frames are only interesting in that they aid the interpretation of the main data stream.
+//              * So only log slow frames during loop iterations where we log a main frame.
+//              */
+//             writeSlowFrameIfNeeded();
 
-            loadMainState(currentTimeUs);
-            writeInterframe();
-        }
-#ifdef USE_GPS
-        if (featureIsEnabled(FEATURE_GPS) && isFieldEnabled(FIELD_SELECT(GPS))) {
-            if (blackboxShouldLogGpsHomeFrame()) {
-                writeGPSHomeFrame();
-                writeGPSFrame(currentTimeUs);
-            } else if (gpsSol.numSat != gpsHistory.GPS_numSat
-                    || gpsSol.llh.lat != gpsHistory.GPS_coord[GPS_LATITUDE]
-                    || gpsSol.llh.lon != gpsHistory.GPS_coord[GPS_LONGITUDE]) {
-                //We could check for velocity changes as well but I doubt it changes independent of position
-                writeGPSFrame(currentTimeUs);
-            }
-        }
-#endif
-    }
+//             loadMainState(currentTimeUs);
+//             writeInterframe();
+//         }
+// #ifdef USE_GPS
+//         if (featureIsEnabled(FEATURE_GPS) && isFieldEnabled(FIELD_SELECT(GPS))) {
+//             if (blackboxShouldLogGpsHomeFrame()) {
+//                 writeGPSHomeFrame();
+//                 writeGPSFrame(currentTimeUs);
+//             } else if (gpsSol.numSat != gpsHistory.GPS_numSat
+//                     || gpsSol.llh.lat != gpsHistory.GPS_coord[GPS_LATITUDE]
+//                     || gpsSol.llh.lon != gpsHistory.GPS_coord[GPS_LONGITUDE]) {
+//                 //We could check for velocity changes as well but I doubt it changes independent of position
+//                 writeGPSFrame(currentTimeUs);
+//             }
+//         }
+// #endif
+//     }
 
-    //Flush every iteration so that our runtime variance is minimized
+//     //Flush every iteration so that our runtime variance is minimized
     blackboxDeviceFlush();
 }
 
@@ -1754,19 +1758,19 @@ void blackboxUpdate(timeUs_t currentTimeUs)
             blackboxOpen();
             blackboxStart();
         }
-#ifdef USE_FLASHFS
-        if (IS_RC_MODE_ACTIVE(BOXBLACKBOXERASE)) {
-            blackboxSetState(BLACKBOX_STATE_START_ERASE);
-        }
-#endif
+// #ifdef USE_FLASHFS
+//         if (IS_RC_MODE_ACTIVE(BOXBLACKBOXERASE)) {
+//             blackboxSetState(BLACKBOX_STATE_START_ERASE);
+//         }
+// #endif
         break;
     case BLACKBOX_STATE_PREPARE_LOG_FILE:
-        if (blackboxDeviceBeginLog()) {
-            blackboxSetState(BLACKBOX_STATE_SEND_HEADER);
-        }
+        blackboxSetState(BLACKBOX_STATE_SEND_HEADER);
+        // if (blackboxDeviceBeginLog()) {
+        // }
         break;
     case BLACKBOX_STATE_SEND_HEADER:
-        blackboxReplenishHeaderBudget();
+        // blackboxReplenishHeaderBudget();
         
         blackboxSetState(BLACKBOX_STATE_SEND_MAIN_FIELD_HEADER);
         return;
@@ -1776,78 +1780,87 @@ void blackboxUpdate(timeUs_t currentTimeUs)
          * Once the UART has had time to init, transmit the header in chunks so we don't overflow its transmit
          * buffer, overflow the OpenLog's buffer, or keep the main loop busy for too long.
          */
-        if (millis() > xmitState.u.startTime + 100) {
-            if (blackboxDeviceReserveBufferSpace(BLACKBOX_TARGET_HEADER_BUDGET_PER_ITERATION) == BLACKBOX_RESERVE_SUCCESS) {
-                for (int i = 0; i < BLACKBOX_TARGET_HEADER_BUDGET_PER_ITERATION && blackboxHeader[xmitState.headerIndex] != '\0'; i++, xmitState.headerIndex++) {
-                    blackboxWrite(blackboxHeader[xmitState.headerIndex]);
-                    blackboxHeaderBudget--;
-                }
-                if (blackboxHeader[xmitState.headerIndex] == '\0') {
-                    blackboxSetState(BLACKBOX_STATE_SEND_MAIN_FIELD_HEADER);
-                }
-            }
-        }
+        // if (millis() > xmitState.u.startTime + 100) {
+        //     if (blackboxDeviceReserveBufferSpace(BLACKBOX_TARGET_HEADER_BUDGET_PER_ITERATION) == BLACKBOX_RESERVE_SUCCESS) {
+        //         for (int i = 0; i < BLACKBOX_TARGET_HEADER_BUDGET_PER_ITERATION && blackboxHeader[xmitState.headerIndex] != '\0'; i++, xmitState.headerIndex++) {
+        //             blackboxWrite(blackboxHeader[xmitState.headerIndex]);
+        //             blackboxHeaderBudget--;
+        //         }
+        //         if (blackboxHeader[xmitState.headerIndex] == '\0') {
+        //             blackboxSetState(BLACKBOX_STATE_SEND_MAIN_FIELD_HEADER);
+        //         }
+        //     }
+        // }
         break;
     case BLACKBOX_STATE_SEND_MAIN_FIELD_HEADER:
-        blackboxReplenishHeaderBudget();
-        //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
-        if (!sendFieldDefinition('I', 'P', blackboxMainFields, blackboxMainFields + 1, ARRAYLEN(blackboxMainFields),
-                &blackboxMainFields[0].condition, &blackboxMainFields[1].condition)) {
-#ifdef USE_GPS
-            if (featureIsEnabled(FEATURE_GPS) && isFieldEnabled(FIELD_SELECT(GPS))) {
-                blackboxSetState(BLACKBOX_STATE_SEND_GPS_H_HEADER);
-            } else
-#endif
-                blackboxSetState(BLACKBOX_STATE_SEND_SLOW_HEADER);
-        }
+        blackboxSetState(BLACKBOX_STATE_RUNNING);
+//         blackboxReplenishHeaderBudget();
+//         //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
+//         if (!sendFieldDefinition('I', 'P', blackboxMainFields, blackboxMainFields + 1, ARRAYLEN(blackboxMainFields),
+//                 &blackboxMainFields[0].condition, &blackboxMainFields[1].condition)) {
+// #ifdef USE_GPS
+//             if (featureIsEnabled(FEATURE_GPS) && isFieldEnabled(FIELD_SELECT(GPS))) {
+//                 blackboxSetState(BLACKBOX_STATE_SEND_GPS_H_HEADER);
+//             } else
+// #endif
+//                 blackboxSetState(BLACKBOX_STATE_SEND_SLOW_HEADER);
+//         }
         break;
-#ifdef USE_GPS
+// #ifdef USE_GPS
     case BLACKBOX_STATE_SEND_GPS_H_HEADER:
-        blackboxReplenishHeaderBudget();
-        //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
-        if (!sendFieldDefinition('H', 0, blackboxGpsHFields, blackboxGpsHFields + 1, ARRAYLEN(blackboxGpsHFields),
-                NULL, NULL) && isFieldEnabled(FIELD_SELECT(GPS))) {
-            blackboxSetState(BLACKBOX_STATE_SEND_GPS_G_HEADER);
-        }
+    
+        blackboxSetState(BLACKBOX_STATE_RUNNING);
+        // blackboxReplenishHeaderBudget();
+        // //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
+        // if (!sendFieldDefinition('H', 0, blackboxGpsHFields, blackboxGpsHFields + 1, ARRAYLEN(blackboxGpsHFields),
+        //         NULL, NULL) && isFieldEnabled(FIELD_SELECT(GPS))) {
+        //     blackboxSetState(BLACKBOX_STATE_SEND_GPS_G_HEADER);
+        // }
         break;
     case BLACKBOX_STATE_SEND_GPS_G_HEADER:
-        blackboxReplenishHeaderBudget();
-        //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
-        if (!sendFieldDefinition('G', 0, blackboxGpsGFields, blackboxGpsGFields + 1, ARRAYLEN(blackboxGpsGFields),
-                &blackboxGpsGFields[0].condition, &blackboxGpsGFields[1].condition) && isFieldEnabled(FIELD_SELECT(GPS))) {
-            blackboxSetState(BLACKBOX_STATE_SEND_SLOW_HEADER);
-        }
+    
+        blackboxSetState(BLACKBOX_STATE_RUNNING);
+        // blackboxReplenishHeaderBudget();
+        // //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
+        // if (!sendFieldDefinition('G', 0, blackboxGpsGFields, blackboxGpsGFields + 1, ARRAYLEN(blackboxGpsGFields),
+        //         &blackboxGpsGFields[0].condition, &blackboxGpsGFields[1].condition) && isFieldEnabled(FIELD_SELECT(GPS))) {
+        //     blackboxSetState(BLACKBOX_STATE_SEND_SLOW_HEADER);
+        // }
         break;
-#endif
-    case BLACKBOX_STATE_SEND_SLOW_HEADER:
-        blackboxReplenishHeaderBudget();
+// #endif
+    case BLACKBOX_STATE_SEND_SLOW_HEADER:    
+        blackboxSetState(BLACKBOX_STATE_RUNNING);
+        // blackboxReplenishHeaderBudget();
         //On entry of this state, xmitState.headerIndex is 0 and xmitState.u.fieldIndex is -1
-        if (!sendFieldDefinition('S', 0, blackboxSlowFields, blackboxSlowFields + 1, ARRAYLEN(blackboxSlowFields),
-                NULL, NULL)) {
-            cacheFlushNextState = BLACKBOX_STATE_SEND_SYSINFO;
-            blackboxSetState(BLACKBOX_STATE_CACHE_FLUSH);
-        }
+        // if (!sendFieldDefinition('S', 0, blackboxSlowFields, blackboxSlowFields + 1, ARRAYLEN(blackboxSlowFields),
+        //         NULL, NULL)) {
+        //     cacheFlushNextState = BLACKBOX_STATE_SEND_SYSINFO;
+        //     blackboxSetState(BLACKBOX_STATE_CACHE_FLUSH);
+        // }
         break;
     case BLACKBOX_STATE_SEND_SYSINFO:
-        blackboxReplenishHeaderBudget();
-        //On entry of this state, xmitState.headerIndex is 0
+    
+        blackboxSetState(BLACKBOX_STATE_RUNNING);
+        // blackboxReplenishHeaderBudget();
+        // //On entry of this state, xmitState.headerIndex is 0
 
-        //Keep writing chunks of the system info headers until it returns true to signal completion
-        if (blackboxWriteSysinfo()) {
-            /*
-             * Wait for header buffers to drain completely before data logging begins to ensure reliable header delivery
-             * (overflowing circular buffers causes all data to be discarded, so the first few logged iterations
-             * could wipe out the end of the header if we weren't careful)
-             */
-            cacheFlushNextState = BLACKBOX_STATE_RUNNING;
-            blackboxSetState(BLACKBOX_STATE_CACHE_FLUSH);
-        }
+        // //Keep writing chunks of the system info headers until it returns true to signal completion
+        // if (blackboxWriteSysinfo()) {
+        //     /*
+        //      * Wait for header buffers to drain completely before data logging begins to ensure reliable header delivery
+        //      * (overflowing circular buffers causes all data to be discarded, so the first few logged iterations
+        //      * could wipe out the end of the header if we weren't careful)
+        //      */
+        //     cacheFlushNextState = BLACKBOX_STATE_RUNNING;
+        //     blackboxSetState(BLACKBOX_STATE_CACHE_FLUSH);
+        // }
         break;
-    case BLACKBOX_STATE_CACHE_FLUSH:
+    case BLACKBOX_STATE_CACHE_FLUSH:    
+        blackboxSetState(BLACKBOX_STATE_RUNNING);
         // Flush the cache and wait until all possible entries have been written to the media
-        if (blackboxDeviceFlushForceComplete()) {
-            blackboxSetState(cacheFlushNextState);
-        }
+        // if (blackboxDeviceFlushForceComplete()) {
+        //     blackboxSetState(cacheFlushNextState);
+        // }
         break;
     case BLACKBOX_STATE_PAUSED:
         // Only allow resume to occur during an I-frame iteration, so that we have an "I" base to work from
@@ -1874,7 +1887,7 @@ void blackboxUpdate(timeUs_t currentTimeUs)
         } else {
             blackboxLogIteration(currentTimeUs);
         }
-        blackboxAdvanceIterationTimers();
+        // blackboxAdvanceIterationTimers();
         break;
     case BLACKBOX_STATE_SHUTTING_DOWN:
         //On entry of this state, startTime is set
