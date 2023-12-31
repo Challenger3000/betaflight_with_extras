@@ -1696,7 +1696,7 @@ STATIC_UNIT_TESTED void blackboxAdvanceIterationTimers(void)
 STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
 {
     blackboxWrite('G');
-    blackboxWrite('A');
+    blackboxWrite('o');
     blackboxWrite('Y');
     blackboxWrite(' ');
 //     // Write a keyframe every blackboxIInterval frames so we can resynchronise upon missing frames
