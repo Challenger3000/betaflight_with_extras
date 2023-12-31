@@ -1699,7 +1699,9 @@ STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
     // blackboxWrite('o');
     // blackboxWrite('Y');
     // blackboxWrite(' ');
-    blackboxWriteString("GAY ");
+    if(blackboxDeviceFlushForce()){
+        blackboxWriteString("GAY ");
+    }
 //     // Write a keyframe every blackboxIInterval frames so we can resynchronise upon missing frames
 //     if (blackboxShouldLogIFrame()) {
 //         /*
@@ -1857,11 +1859,11 @@ void blackboxUpdate(timeUs_t currentTimeUs)
         // }
         break;
     case BLACKBOX_STATE_CACHE_FLUSH:    
-        blackboxSetState(BLACKBOX_STATE_RUNNING);
+        // blackboxSetState(BLACKBOX_STATE_RUNNING);
         // Flush the cache and wait until all possible entries have been written to the media
-        // if (blackboxDeviceFlushForceComplete()) {
-        //     blackboxSetState(cacheFlushNextState);
-        // }
+        if (blackboxDeviceFlushForceComplete()) {
+            blackboxSetState(BLACKBOX_STATE_RUNNING);
+        }
         break;
     case BLACKBOX_STATE_PAUSED:
         // Only allow resume to occur during an I-frame iteration, so that we have an "I" base to work from
