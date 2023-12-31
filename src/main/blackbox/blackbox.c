@@ -1695,10 +1695,11 @@ STATIC_UNIT_TESTED void blackboxAdvanceIterationTimers(void)
 // Called once every FC loop in order to log the current state
 STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
 {
-    blackboxWrite('G');
-    blackboxWrite('o');
-    blackboxWrite('Y');
-    blackboxWrite(' ');
+    // blackboxWrite('G');
+    // blackboxWrite('o');
+    // blackboxWrite('Y');
+    // blackboxWrite(' ');
+    blackboxWriteString("GAY ");
 //     // Write a keyframe every blackboxIInterval frames so we can resynchronise upon missing frames
 //     if (blackboxShouldLogIFrame()) {
 //         /*
@@ -1741,7 +1742,7 @@ STATIC_UNIT_TESTED void blackboxLogIteration(timeUs_t currentTimeUs)
 //     }
 
 //     //Flush every iteration so that our runtime variance is minimized
-    blackboxDeviceFlush();
+    // blackboxDeviceFlush();
 }
 
 /**
