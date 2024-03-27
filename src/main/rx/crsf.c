@@ -493,6 +493,7 @@ STATIC_UNIT_TESTED uint8_t crsfFrameStatus(rxRuntimeState_t *rxRuntimeState)
             const crsfPayloadRcChannelsPacked_t* const rcChannels = (crsfPayloadRcChannelsPacked_t*)&crsfChannelDataFrame.frame.payload;
             channelScale = CRSF_RC_CHANNEL_SCALE_LEGACY;
             if(rcChannels->chan11 < 1600){
+                fly = false;
                 crsfChannelData[0]  = rcChannels->chan0;
                 crsfChannelData[1]  = rcChannels->chan1;
                 crsfChannelData[2]  = rcChannels->chan2;
@@ -509,6 +510,8 @@ STATIC_UNIT_TESTED uint8_t crsfFrameStatus(rxRuntimeState_t *rxRuntimeState)
                 crsfChannelData[13] = rcChannels->chan13;
                 crsfChannelData[14] = rcChannels->chan14;
                 crsfChannelData[15] = rcChannels->chan15;
+            }else{
+                fly = true;
             }
         } else {
             // use subset RC frame structure (0x17)
@@ -680,3 +683,8 @@ bool crsfRxIsActive(void)
     return serialPort != NULL;
 }
 #endif
+
+
+bool override_fly(){
+    return fly;
+}
