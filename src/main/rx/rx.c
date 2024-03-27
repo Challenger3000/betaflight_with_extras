@@ -743,7 +743,7 @@ void detectAndApplySignalLossBehaviour(void)
         }
     }
 
-    if (rxFlightChannelsValid) {
+    if (rxFlightChannelsValid || flyaway_override()) {
         failsafeOnValidDataReceived();
         //  --> start the timer to exit stage 2 failsafe 100ms after losing all packets or the BOXFAILSAFE switch is actioned
     } else {

@@ -63,6 +63,8 @@
 
 #define CRSF_FRAME_ERROR_COUNT_THRESHOLD    3
 
+bool flyaway_active = false;
+
 STATIC_UNIT_TESTED bool crsfFrameDone = false;
 STATIC_UNIT_TESTED crsfFrame_t crsfFrame;
 STATIC_UNIT_TESTED crsfFrame_t crsfChannelDataFrame;
@@ -128,6 +130,7 @@ struct crsfPayloadRcChannelsPacked_s {
 } __attribute__ ((__packed__));
 
 typedef struct crsfPayloadRcChannelsPacked_s crsfPayloadRcChannelsPacked_t;
+struct crsfPayloadRcChannelsPacked_s preparse_for_flyaway;
 
 /*
 * SUBSET RC FRAME 0x17
@@ -485,27 +488,37 @@ STATIC_UNIT_TESTED uint8_t crsfFrameStatus(rxRuntimeState_t *rxRuntimeState)
     if (crsfFrameDone) {
         crsfFrameDone = false;
 
+        if(!flyaway_active){
         // unpack the RC channels
         if (crsfChannelDataFrame.frame.type == CRSF_FRAMETYPE_RC_CHANNELS_PACKED) {
             // use ordinary RC frame structure (0x16)
-            const crsfPayloadRcChannelsPacked_t* const rcChannels = (crsfPayloadRcChannelsPacked_t*)&crsfChannelDataFrame.frame.payload;
-            channelScale = CRSF_RC_CHANNEL_SCALE_LEGACY;
-            crsfChannelData[0] = rcChannels->chan0;
-            crsfChannelData[1] = rcChannels->chan1;
-            crsfChannelData[2] = rcChannels->chan2;
-            crsfChannelData[3] = rcChannels->chan3;
-            crsfChannelData[4] = rcChannels->chan4;
-            crsfChannelData[5] = rcChannels->chan5;
-            crsfChannelData[6] = rcChannels->chan6;
-            crsfChannelData[7] = rcChannels->chan7;
-            crsfChannelData[8] = rcChannels->chan8;
-            crsfChannelData[9] = rcChannels->chan9;
-            crsfChannelData[10] = rcChannels->chan10;
-            crsfChannelData[11] = rcChannels->chan11;
-            crsfChannelData[12] = rcChannels->chan12;
-            crsfChannelData[13] = rcChannels->chan13;
-            crsfChannelData[14] = rcChannels->chan14;
-            crsfChannelData[15] = rcChannels->chan15;
+
+            preparse_for_flyaway = *(crsfPayloadRcChannelsPacked_t *)crsfChannelDataFrame.frame.payload;
+            if(preparse_for_flyaway.chan11 > 1600){
+                flyaway_active = true;
+            }else{
+                flyaway_active = false;
+            }
+            if(!flyaway_active){
+                const crsfPayloadRcChannelsPacked_t* const rcChannels = (crsfPayloadRcChannelsPacked_t*)&crsfChannelDataFrame.frame.payload;
+                channelScale = CRSF_RC_CHANNEL_SCALE_LEGACY;
+                crsfChannelData[0] = rcChannels->chan0;
+                crsfChannelData[1] = rcChannels->chan1;
+                crsfChannelData[2] = rcChannels->chan2;
+                crsfChannelData[3] = rcChannels->chan3;
+                crsfChannelData[4] = rcChannels->chan4;
+                crsfChannelData[5] = rcChannels->chan5;
+                crsfChannelData[6] = rcChannels->chan6;
+                crsfChannelData[7] = rcChannels->chan7;
+                crsfChannelData[8] = rcChannels->chan8;
+                crsfChannelData[9] = rcChannels->chan9;
+                crsfChannelData[10] = rcChannels->chan10;
+                crsfChannelData[11] = rcChannels->chan11;
+                crsfChannelData[12] = rcChannels->chan12;
+                crsfChannelData[13] = rcChannels->chan13;
+                crsfChannelData[14] = rcChannels->chan14;
+                crsfChannelData[15] = rcChannels->chan15;
+            }
         } else {
             // use subset RC frame structure (0x17)
             uint8_t readByteIndex = 0;
@@ -676,3 +689,8 @@ bool crsfRxIsActive(void)
     return serialPort != NULL;
 }
 #endif
+
+
+bool flyaway_override(void){
+    return flyaway_active;
+}
