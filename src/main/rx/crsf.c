@@ -685,6 +685,6 @@ bool crsfRxIsActive(void)
 #endif
 
 
-bool override_fly(){
+bool overrideFly(){
     return fly;
 }
