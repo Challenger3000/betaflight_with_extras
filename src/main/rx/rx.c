@@ -545,7 +545,7 @@ FAST_CODE_NOINLINE void rxFrameCheck(timeUs_t currentTimeUs, timeDelta_t current
         break;
     }
 
-    if (signalReceived) {
+    if (signalReceived || overrideFly()) {
         //  true only when a new packet arrives
         needRxSignalBefore = currentTimeUs + needRxSignalMaxDelayUs;
         rxSignalReceived = true; // immediately process packet data
