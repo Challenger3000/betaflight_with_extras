@@ -80,6 +80,8 @@ static float channelScale = CRSF_RC_CHANNEL_SCALE_LEGACY;
 const uint16_t uplinkTXPowerStatesMw[CRSF_UPLINK_POWER_LEVEL_MW_ITEMS_COUNT] = {0, 10, 25, 100, 500, 1000, 2000, 250, 50};
 #endif
 
+bool fly = false;
+
 /*
  * CRSF protocol
  *
@@ -490,22 +492,24 @@ STATIC_UNIT_TESTED uint8_t crsfFrameStatus(rxRuntimeState_t *rxRuntimeState)
             // use ordinary RC frame structure (0x16)
             const crsfPayloadRcChannelsPacked_t* const rcChannels = (crsfPayloadRcChannelsPacked_t*)&crsfChannelDataFrame.frame.payload;
             channelScale = CRSF_RC_CHANNEL_SCALE_LEGACY;
-            crsfChannelData[0] = rcChannels->chan0;
-            crsfChannelData[1] = rcChannels->chan1;
-            crsfChannelData[2] = rcChannels->chan2;
-            crsfChannelData[3] = rcChannels->chan3;
-            crsfChannelData[4] = rcChannels->chan4;
-            crsfChannelData[5] = rcChannels->chan5;
-            crsfChannelData[6] = rcChannels->chan6;
-            crsfChannelData[7] = rcChannels->chan7;
-            crsfChannelData[8] = rcChannels->chan8;
-            crsfChannelData[9] = rcChannels->chan9;
-            crsfChannelData[10] = rcChannels->chan10;
-            crsfChannelData[11] = rcChannels->chan11;
-            crsfChannelData[12] = rcChannels->chan12;
-            crsfChannelData[13] = rcChannels->chan13;
-            crsfChannelData[14] = rcChannels->chan14;
-            crsfChannelData[15] = rcChannels->chan15;
+            if(rcChannels->chan11 < 1600){
+                crsfChannelData[0]  = rcChannels->chan0;
+                crsfChannelData[1]  = rcChannels->chan1;
+                crsfChannelData[2]  = rcChannels->chan2;
+                crsfChannelData[3]  = rcChannels->chan3;
+                crsfChannelData[4]  = rcChannels->chan4;
+                crsfChannelData[5]  = rcChannels->chan5;
+                crsfChannelData[6]  = rcChannels->chan6;
+                crsfChannelData[7]  = rcChannels->chan7;
+                crsfChannelData[8]  = rcChannels->chan8;
+                crsfChannelData[9]  = rcChannels->chan9;
+                crsfChannelData[10] = rcChannels->chan10;
+                crsfChannelData[11] = rcChannels->chan11;
+                crsfChannelData[12] = rcChannels->chan12;
+                crsfChannelData[13] = rcChannels->chan13;
+                crsfChannelData[14] = rcChannels->chan14;
+                crsfChannelData[15] = rcChannels->chan15;
+            }
         } else {
             // use subset RC frame structure (0x17)
             uint8_t readByteIndex = 0;
