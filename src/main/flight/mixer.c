@@ -346,37 +346,47 @@ static void applyFlipOverAfterCrashModeToMotors(void)
     }
 }
 
+int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)
+{
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 static void applyMixToMotors(float motorMix[MAX_SUPPORTED_MOTORS], motorMixer_t *activeMixer)
 {
     // Now add in the desired throttle, but keep in a range that doesn't clip adjusted
     // roll/pitch/yaw. This could move throttle down, but also up for those low throttle flips.
-    for (int i = 0; i < mixerRuntime.motorCount; i++) {
-        float motorOutput = motorOutputMixSign * motorMix[i] + throttle * activeMixer[i].throttle;
-#ifdef USE_THRUST_LINEARIZATION
-        motorOutput = pidApplyThrustLinearization(motorOutput);
-#endif
-        motorOutput = motorOutputMin + motorOutputRange * motorOutput;
+//     for (int i = 0; i < mixerRuntime.motorCount; i++) {
+// //         float motorOutput = motorOutputMixSign * motorMix[i] + throttle * activeMixer[i].throttle;
+// // #ifdef USE_THRUST_LINEARIZATION
+// //         motorOutput = pidApplyThrustLinearization(motorOutput);
+// // #endif
+// //         motorOutput = motorOutputMin + motorOutputRange * motorOutput;
 
-#ifdef USE_SERVOS
-        if (mixerIsTricopter()) {
-            motorOutput += mixerTricopterMotorCorrection(i);
-        }
-#endif
-        if (failsafeIsActive()) {
-#ifdef USE_DSHOT
-            if (isMotorProtocolDshot()) {
-                motorOutput = (motorOutput < motorRangeMin) ? mixerRuntime.disarmMotorOutput : motorOutput; // Prevent getting into special reserved range
-            }
-#endif
-            motorOutput = constrainf(motorOutput, mixerRuntime.disarmMotorOutput, motorRangeMax);
-        } else {
-            motorOutput = constrainf(motorOutput, motorRangeMin, motorRangeMax);
-        }
+// // #ifdef USE_SERVOS
+// //         if (mixerIsTricopter()) {
+// //             motorOutput += mixerTricopterMotorCorrection(i);
+// //         }
+// // #endif
+// //         if (failsafeIsActive()) {
+// // #ifdef USE_DSHOT
+// //             if (isMotorProtocolDshot()) {
+// //                 motorOutput = (motorOutput < motorRangeMin) ? mixerRuntime.disarmMotorOutput : motorOutput; // Prevent getting into special reserved range
+// //             }
+// // #endif
+// //             motorOutput = constrainf(motorOutput, mixerRuntime.disarmMotorOutput, motorRangeMax);
+// //         } else {
+// //             motorOutput = constrainf(motorOutput, motorRangeMin, motorRangeMax);
+// //         }
         
-        motorOutput = 500;
+//         motorOutput = map(rcData[0], 1000, 2000, 48, 2047);
 
-        motor[i] = motorOutput;
-    }
+//         motor[i] = motorOutput;
+//     }
+     
+    motor[0] = map(rcData[0], 1000, 2000, 48, 2047);
+    motor[1] = map(rcData[1], 1000, 2000, 48, 2047);
+    motor[2] = map(rcData[2], 1000, 2000, 48, 2047);
+    motor[3] = map(rcData[3], 1000, 2000, 48, 2047);
 
     // Disarmed mode
     if (!ARMING_FLAG(ARMED)) {
