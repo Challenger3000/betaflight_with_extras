@@ -385,10 +385,10 @@ static void applyMixToMotors(float motorMix[MAX_SUPPORTED_MOTORS], motorMixer_t 
 //         motor[i] = motorOutput;
 //     }
      
-    motor[0] = map(rcData[0], 1000, 2000, 48, 2047);
-    motor[1] = map(rcData[1], 1000, 2000, 48, 2047);
-    motor[2] = map(rcData[2], 1000, 2000, 48, 2047);
-    motor[3] = map(rcData[3], 1000, 2000, 48, 2047);
+    motor[0] = _map(rcData[0], 1000, 2000, 48, 2047);
+    motor[1] = _map(rcData[1], 1000, 2000, 48, 2047);
+    motor[2] = _map(rcData[2], 1000, 2000, 48, 2047);
+    motor[3] = _map(rcData[3], 1000, 2000, 48, 2047);
 
     // Disarmed mode
     if (!ARMING_FLAG(ARMED)) {
