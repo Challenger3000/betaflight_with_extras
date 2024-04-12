@@ -346,7 +346,7 @@ static void applyFlipOverAfterCrashModeToMotors(void)
     }
 }
 
-int32_t _map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t out_max)
+int32_t _map(float x, float in_min, float in_max, float out_min, float out_max)
 {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
