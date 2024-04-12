@@ -353,6 +353,8 @@ int32_t map(int32_t x, int32_t in_min, int32_t in_max, int32_t out_min, int32_t 
 
 static void applyMixToMotors(float motorMix[MAX_SUPPORTED_MOTORS], motorMixer_t *activeMixer)
 {
+    UNUSED(activeMixer);
+    UNUSED(motorMix);
     // Now add in the desired throttle, but keep in a range that doesn't clip adjusted
     // roll/pitch/yaw. This could move throttle down, but also up for those low throttle flips.
 //     for (int i = 0; i < mixerRuntime.motorCount; i++) {
