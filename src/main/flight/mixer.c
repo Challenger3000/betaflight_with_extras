@@ -373,7 +373,8 @@ static void applyMixToMotors(float motorMix[MAX_SUPPORTED_MOTORS], motorMixer_t 
             motorOutput = constrainf(motorOutput, motorRangeMin, motorRangeMax);
         }
         
-        motorOutput = (motorRangeMin + motorRangeMax)/2;
+        motorOutput = 500;
+
         motor[i] = motorOutput;
     }
 
