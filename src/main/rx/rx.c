@@ -644,31 +644,27 @@ STATIC_UNIT_TESTED float applyRxChannelRangeConfiguraton(float sample, const rxC
 
 static void readRxChannelsApplyRanges(void)
 {
+    for (int channel = 0; channel < rxChannelCount; channel++) {
 
-    const uint8_t PreparseRawChannel = rxRuntimeState.rcReadRawFn(&rxRuntimeState, 7);
-    if(rxConfig()->rcmap[7] >){
-        for (int channel = 0; channel < rxChannelCount; channel++) {
+        const uint8_t rawChannel = channel < RX_MAPPABLE_CHANNEL_COUNT ? rxConfig()->rcmap[channel] : channel;
 
-            const uint8_t rawChannel = channel < RX_MAPPABLE_CHANNEL_COUNT ? rxConfig()->rcmap[channel] : channel;
-
-            // sample the channel
-            float sample;
-    #if defined(USE_RX_MSP_OVERRIDE)
-            if (rxConfig()->msp_override_channels_mask) {
-                sample = rxMspOverrideReadRawRc(&rxRuntimeState, rxConfig(), rawChannel);
-            } else
-    #endif
-            {
-                sample = rxRuntimeState.rcReadRawFn(&rxRuntimeState, rawChannel);
-            }
-
-            // apply the rx calibration
-            if (channel < NON_AUX_CHANNEL_COUNT) {
-                sample = applyRxChannelRangeConfiguraton(sample, rxChannelRangeConfigs(channel));
-            }
-
-            rcRaw[channel] = sample;
+        // sample the channel
+        float sample;
+#if defined(USE_RX_MSP_OVERRIDE)
+        if (rxConfig()->msp_override_channels_mask) {
+            sample = rxMspOverrideReadRawRc(&rxRuntimeState, rxConfig(), rawChannel);
+        } else
+#endif
+        {
+            sample = rxRuntimeState.rcReadRawFn(&rxRuntimeState, rawChannel);
         }
+
+        // apply the rx calibration
+        if (channel < NON_AUX_CHANNEL_COUNT) {
+            sample = applyRxChannelRangeConfiguraton(sample, rxChannelRangeConfigs(channel));
+        }
+
+        rcRaw[channel] = sample;
     }
 }
 
@@ -681,6 +677,7 @@ void detectAndApplySignalLossBehaviour(void)
     // rxFlightChannelsValid is true the instant we get a good packet or the BOXFAILSAFE switch is reverted
     // can also go false with good packets but where one flight channel is bad > 300ms (PPM type receiver error)
     if(rcRaw[11] < 1600){
+
         for (int channel = 0; channel < rxChannelCount; channel++) {
             float sample = rcRaw[channel]; // sample has latest RC value, rcData has last 'accepted valid' value
             const bool thisChannelValid = rxFlightChannelsValid && isPulseValid(sample);
